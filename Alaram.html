@@ -1,0 +1,104 @@
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    #timer {
+      font-size: 48px;
+      color: green;
+    }
+
+    #input {
+      width: 200px;
+      height: 40px;
+      font-size: 24px;
+    }
+
+    #start {
+      width: 100px;
+      height: 50px;
+      font-size: 18px;
+      background-color: lightgreen;
+      border: none;
+      cursor: pointer;
+    }
+
+    #start:hover {
+      background-color: green;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Timer</h1>
+  <p>Enter the time in hh:mm:ss format and click start</p>
+  <input id="input" type="text" placeholder="00:00:00">
+  <button id="start">Start</button>
+  <p id="timer">00:00:00</p>
+  <script>
+    // Get the elements from the document
+    var input = document.getElementById("input");
+    var start = document.getElementById("start");
+    var timer = document.getElementById("timer");
+
+    // Define some variables
+    var interval; // The interval object that will update the timer
+    var seconds; // The total seconds entered by the user
+    var alarm = new Audio("alarm.mp3"); // The audio object that will play the sound
+
+    // Add an event listener to the start button
+    start.addEventListener("click", function() {
+      // Validate the input
+      if (input.value.match(/^\d{2}:\d{2}:\d{2}$/)) {
+        // Convert the input to seconds
+        var parts = input.value.split(":");
+        seconds = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+
+        // Clear any previous interval
+        clearInterval(interval);
+
+        // Start a new interval
+        interval = setInterval(updateTimer, 1000);
+      } else {
+        // Invalid input
+        alert("Please enter a valid time in hh:mm:ss format");
+      }
+    });
+
+    // Define a function to update the timer
+    function updateTimer() {
+      // Check if the timer is finished
+      if (seconds == 0) {
+        // Stop the interval
+        clearInterval(interval);
+
+        // Play the sound and alert the user
+        alarm.play();
+        alert("Time's up!");
+
+        // Reset the timer display
+        timer.innerHTML = "00:00:00";
+      } else {
+        // Decrease the seconds by one
+        seconds--;
+
+        // Convert the seconds to hh:mm:ss format
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor((seconds % 3600) / 60);
+        var secondsLeft = seconds % 60;
+
+        // Pad with zeros if needed
+        if (hours < 10) hours = "0" + hours;
+        if (minutes < 10) minutes = "0" + minutes;
+        if (secondsLeft < 10) secondsLeft = "0" + secondsLeft;
+
+        // Update the timer display
+        timer.innerHTML = hours + ":" + minutes + ":" + secondsLeft;
+      }
+    }
+  </script>
+</body>
+</html>
